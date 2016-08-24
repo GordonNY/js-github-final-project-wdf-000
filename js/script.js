@@ -1,3 +1,19 @@
+class GithubInteractor {
+  constructor(token) {
+    this.token = token;
+  }
+}
+
+function handleResponse(data) {
+  var link = $('<a>').attr('href', data.issueURL).text(data.title);
+  $('#issue').append(link);
+  console.log(data);
+}
+
+function handleError(jqXHR, textStatus, error) {
+  console.log("Post error: " + error);
+}
+
 
 
 function submitForm() {
@@ -13,7 +29,6 @@ function submitForm() {
 }
 
 function createIssue(repoName, repoOwner, title, body) {
-  debugger;
   // /repos/:owner/:repo/issues
   const url = 'https://api.github.com/repos/' + repoOwner + '/' + repoName + '/issues';
   const data = {
@@ -29,13 +44,10 @@ function createIssue(repoName, repoOwner, title, body) {
       xhr.setRequestHeader("Authorization", "token " + 'toke here');
     },
     data: JSON.stringify(data)
-  }).done(function(response) {
-
-    var link = $('<a>').attr('href', this.issueURL).text(this.title);
-    $('#issue').append(link);
-
-  }).fail(function(error) {
-    // console.log(error);
+  }).done(function(data) {
+    return handleResponse(data);
+  }).fail(function(jqXHR, textStatus, error) {
+      return handleError(jqXHR, textStatus, error);
   });
 }
 
